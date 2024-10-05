@@ -10,27 +10,45 @@ import (
 	"example.com/note/todo"
 )
 
+type saver interface {
+	Save() error
+}
+
 func main() {
 	title, content := getNoteData()
 	todoText := getUserInput("Todo text: ")
-	todo, _ := todo.New(todoText)
+	todo, err := todo.New(todoText)
 
-	todo.Display()
-	todo.Save()
-	fmt.Println("The tododododododododod !!")
-
-	userNote, _ := note.New(title, content)
-	userNote.Display()
-	err := userNote.Save()
 	if err != nil {
-		fmt.Println("Saving the note failed. ")
+		fmt.Println(err)
 		return
 	}
-	fmt.Println("The note has been saved successfully !!")
+	todo.Display()
+	err = saveData(todo)
+	// err := todo.Save()
+	if err != nil {
+
+		return
+	}
+	userNote, err := note.New(title, content)
+	if err != nil {
+		return
+	}
+	userNote.Display()
+	err = saveData(userNote)
+	if err != nil {
+		return
+	}
 }
 
-func getTodoData() string {
-	return getUserInput("Todo text: ")
+func saveData(data saver) error {
+	err := data.Save()
+	if err != nil {
+		fmt.Println("Saving the note failed. ")
+		return err
+	}
+	fmt.Println("The note has been saved successfully !!")
+	return err
 }
 
 func getNoteData() (string, string) {
