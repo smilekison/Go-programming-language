@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+
+	"example.com/price-calculator/filemanager"
 	"example.com/price-calculator/prices"
 )
 
@@ -14,7 +17,8 @@ func main() {
 	// result := make(map[float64][]float64)
 
 	for _, taxRate := range taxRates {
-		priceJob := prices.NewTaxIncludedPriceJob(taxRate)
+		fm := filemanager.New("prices.txt", fmt.Sprintf("result_%.0f.json", taxRate))
+		priceJob := prices.NewTaxIncludedPriceJob(fm, taxRate)
 		priceJob.Process()
 	}
 
