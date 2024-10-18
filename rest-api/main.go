@@ -18,11 +18,20 @@ func main() {
 }
 
 func getEvents(context *gin.Context) {
+	// Call GetAllEvents() to fetch all events from the database
 	events, err := models.GetAllEvents()
+
+	// Log the result for debugging
+	fmt.Println("These are the events fetched: ", events)
+
+	// If there is an error, return a 500 response with a message
 	if err != nil {
+		fmt.Println("Error fetching events: ", err) // Log the error for debugging
 		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch events."})
 		return
 	}
+
+	// Return the events as a JSON response with status code 200
 	context.JSON(http.StatusOK, events)
 }
 
