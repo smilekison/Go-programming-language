@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"example.com/rest-api/db"
+	"example.com/rest-api/utils"
 )
 
 type User struct {
@@ -19,8 +20,9 @@ func (u User) Save() error {
 		fmt.Println("Unable to register user. ", err)
 	}
 	defer stmt.Close()
+	hashedPassword, err := utils.HashPassword(u.Password)
 
-	result, _ := stmt.Exec(u.Email, u.Password)
+	result, _ := stmt.Exec(u.Email, hashedPassword)
 	if err != nil {
 		fmt.Println("Unable to register user. ", err)
 	}
