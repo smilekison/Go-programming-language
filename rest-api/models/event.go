@@ -13,7 +13,7 @@ type Event struct {
 	Description string    `binding:"required"`
 	Location    string    `binding:"required"`
 	DateTime    time.Time `binding:"required"`
-	UserID      int
+	UserID      int64
 }
 
 var events []Event = []Event{}
@@ -50,6 +50,7 @@ func (e *Event) Save() error {
 
 	return nil // Return nil to indicate success
 }
+
 func GetAllEvents() ([]Event, error) {
 	query := "SELECT id, name, description, location, dateTime, user_id FROM events"
 	rows, err := db.DB.Query(query)
@@ -94,4 +95,48 @@ func GetEventByID(id int64) (*Event, error) {
 		return nil, fmt.Errorf("failed to scan event row: %w", err)
 	}
 	return &event, nil
+}
+
+func (e Event) Update() error {
+	query := `UPDATE events SET name = ?, description =?, location = ?, dateTime = ? WHERE id = ?`
+
+	// Prepare the statement
+	stmt, err := db.DB.Prepare(query)
+	if err != nil {
+		return fmt.Errorf("failed to prepare update  statement: %w", err)
+	}
+	fmt.Println(stmt)
+
+	// fmt.Println("This is Name:: ", e.Name)
+	// fmt.Println("This is Name:: ", e.Description)
+	// fmt.Println("This is Name:: ", e.Location)
+	// fmt.Println("This is Name:: ", e.DateTime)
+	// fmt.Println("This is Name:: ", e.UserID)
+	// Execute the insert query
+	_, err = stmt.Exec(e.Name, e.Description, e.Location, e.DateTime, e.ID)
+	if err != nil {
+		return fmt.Errorf("failed to execute insert statement: %w", err)
+	}
+	defer stmt.Close()
+	return nil
+
+}
+
+func (e Event) Delete() error {
+	query := `DELETE FROM events WHERE id = ?`
+
+	// Prepare the statement
+	stmt, err := db.DB.Prepare(query)
+	if err != nil {
+		return fmt.Errorf("failed to prepare delete  statement: %w", err)
+	}
+	fmt.Println(stmt)
+
+	defer stmt.Close()
+	// Execute the insert query
+	_, err = stmt.Exec(e.ID)
+	// if err != nil {
+	// 	return fmt.Errorf("failed to execute delete statement: %w", err)
+	// }
+	return err
 }

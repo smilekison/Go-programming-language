@@ -60,3 +60,66 @@ func createEvent(context *gin.Context) {
 
 	context.JSON(http.StatusCreated, gin.H{"Message": "event Created", "event": event})
 }
+
+func updateEvent(context *gin.Context) {
+	fmt.Println("This is update event.")
+	// Call GetAllEvents() to fetch all events from the database
+	eventId, err := strconv.ParseInt(context.Param("id"), 10, 64)
+	fmt.Println("This is update event ID:::", eventId)
+
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse event id. Try again later !!"})
+		return
+	}
+	_, err = models.GetEventByID(eventId)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch event. Try again later !!"})
+		return
+	}
+	var updatedEvent models.Event
+
+	err = context.ShouldBindBodyWithJSON(&updatedEvent)
+	fmt.Println(err)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse the data"})
+
+	}
+
+	updatedEvent.ID = eventId
+	err = updatedEvent.Update()
+
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"message": "Could not Update the data"})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"Message": "Event updated successfully!! "})
+}
+
+func deleteEvent(context *gin.Context) {
+	fmt.Println("This is delete event.")
+	// Call GetAllEvents() to fetch all events from the database
+	eventId, err := strconv.ParseInt(context.Param("id"), 10, 64)
+
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch event. Try again later !!"})
+		return
+	}
+
+	fmt.Println("This is delete event ID:::", eventId)
+
+	event, err := models.GetEventByID(eventId)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch event. Try again later !!"})
+		return
+	}
+
+	err = event.Delete()
+
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"message": "Could not Update the data"})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"Message": "Event deleted successfully!! "})
+}
