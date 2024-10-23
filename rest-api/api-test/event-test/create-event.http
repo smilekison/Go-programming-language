@@ -1,10 +1,10 @@
 POST http://localhost:8080/events HTTP/1.1
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImEiLCJleHAiOjE3Mjk2ODYyNDEsInVzZXJJZCI6Mn0.RW1602QarvQB2c4Whff4l2NhKTMwSL5V_RXAVC2OOKA
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QiLCJleHAiOjE3Mjk3MjMzMTksInVzZXJJZCI6M30.OMC3rUjdc9VzQGy9BNxE7r7V6Inrevtl-Jb2v2DE3KI
 
 {
-    "name": "no way",
-    "description": "no way",
-    "location": "no way",
+    "name": " asdf asdf  way asdf asdf  way asdf asdf  way asdf asdf  way asdf asdf  wayasdf",
+    "description": "no adfasdfasdf  way",
+    "location": "no asdfasdf way",
     "dateTime": "2025-01-01T15:30:00.000Z"   
 }
