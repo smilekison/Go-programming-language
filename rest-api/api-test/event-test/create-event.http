@@ -1,5 +1,6 @@
 POST http://localhost:8080/events HTTP/1.1
 Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImEiLCJleHAiOjE3Mjk2ODYyNDEsInVzZXJJZCI6Mn0.RW1602QarvQB2c4Whff4l2NhKTMwSL5V_RXAVC2OOKA
 
 {
     "name": "no way",
