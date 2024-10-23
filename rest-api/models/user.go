@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"fmt"
 
 	"example.com/rest-api/db"
@@ -8,7 +9,7 @@ import (
 )
 
 type User struct {
-	Id       int64
+	ID       int64
 	Email    string
 	Password string
 }
@@ -27,10 +28,32 @@ func (u User) Save() error {
 		fmt.Println("Unable to register user. ", err)
 	}
 	userId, err := result.LastInsertId()
-	u.Id = userId
+	u.ID = userId
 	return err
 
 }
+
+func (u *User) ValidateCredentials() error {
+	query := `SELECT id, password from users where email = ?`
+	row := db.DB.QueryRow(query, u.Email)
+
+	var retrievedPassword string
+	err := row.Scan(&u.ID, &retrievedPassword)
+
+	if err != nil {
+		return errors.New("Credentials invalid")
+	}
+
+	passwordIsValid := utils.CheckPasswordHash(u.Password, retrievedPassword)
+	// fmt.Println("This is boolean value for password validation::: ", passwordIsValid)
+
+	if !passwordIsValid {
+		return errors.New("Credentials invalid")
+	}
+
+	return nil
+}
+
 func GetAllUsers() ([]User, error) {
 	query := "SELECT id, email, password FROM users"
 	rows, err := db.DB.Query(query)
@@ -48,7 +71,7 @@ func GetAllUsers() ([]User, error) {
 	// Loop through the rows and scan each one into an Event struct
 	for rows.Next() {
 		var user User
-		err := rows.Scan(&user.Id, &user.Email, &user.Password)
+		err := rows.Scan(&user.ID, &user.Email, &user.Password)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan event row: %w", err)
 		}
